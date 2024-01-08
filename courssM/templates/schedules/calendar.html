@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<div id="input-nav"><a href="{% url 'home' %}" class="primary1">Home</a> <i>&rsaquo;</i> Schedules</div>
+
+<a class="add-button" href="{% url 'add_event' %}"><i class="fas fa-plus"></i>Add Event</a>
+
+{% for event in events %}
+<div>
+    <p>{{event.date}}-{{event.time}}</p>
+</div>
+{% endfor %}
+
+
+
+{% endblock content %}

@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+{% if request.user.is_superuser %}
+<a class="add-button" href="{% url 'course_session_add' %}"><i class="fas fa-plus"></i>Allocate Session</a>
+{% endif %}
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="alert alert-danger">
+    <i class="fas fa-exclamation-circle"></i>{{ message }}
+</div>
+{% else %}
+<div class="alert alert-success">
+    <i class="fas fa-check-circle"></i>{{ message }}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+<h1>caourse session</h1>
+{% if request.user.is_superuser %}
+<div class="content-center">
+    <form id="course_session_filter_form" class="search-form" action="" method="GET">{% csrf_token %}
+        <input class="au-input" type="text" name="lecturer" placeholder="Lecturer" value="{{ request.GET.lecturer }}"/>
+        <input class="au-input" type="text" name="student" placeholder="Student" value="{{ request.GET.student }}"/>
+        <input class="au-input" type="text" name="course" placeholder="Course" value="{{ request.GET.course }}"/>
+        <button class="btn btn-light" type="submit">
+            <i class="fas fa-search"></i> filter
+        </button>
+        <button id="clearButton" class=" btn btn-light ml-2" type="button">
+            <i class="fas fa-search"></i> Clear
+        </button>
+    </form>
+</div>
+{% endif %}
+<div class="table-responsive table-shadow table-light table-striped m-0 mt-5">
+    <div class="table-shadow">
+        <table class="table table-light">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>lecturer </th>
+                    <th>student/group </th>
+                    <th>course </th>
+                    <th>course_dates</th>
+                    <th>course_time</th>
+                    <th>course length</th>
+                    <th>delivered</th>
+                    {% if request.user.is_superuser %}
+                    <th>Action</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for c_s in course_sessions %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td>{{ c_s.allocations.lecturer.get_full_name }}</td>
+                    <td>{{ c_s.allocations.content_object }}</td>
+                    <td>{{ c_s.allocations.courses.title }}</td>
+                    <td>{{ c_s.select_day }}
+                    <td>{{ c_s.select_time }}
+                    <td>{{ c_s.allocations.course_length }}
+                    <td>{% if c_s.delivered %}
+                        Yes
+                        {% else %} No {% endif %}
+                    </td>
+
+
+                    <td>
+                        <div class="update-delete">
+                            <a href="{% url 'course_session_edit' pk=c_s.id %}" class="update"><i
+                                    class="fas fa-edit"></i></a>
+                            {% if request.user.is_superuser %}
+                            <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#exampleModal-{{c_s.id}}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            {% endif %}
+                        </div>
+                        {% if request.user.is_superuser %}
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal-{{c_s.id}}" tabindex="-1" aria-labelledby="exampleModal-{{c_s.id}}Label"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <p class="p-4">
+                                        Are you sure you want to delete this program?
+                                    </p>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+                                        <a class="btn btn-danger"
+                                            href="{% url 'course_session_delete' pk=c_s.id %}">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if request.user.is_parent %}
+        <table class="table table-light">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>lecturer </th>
+                    <th>group </th>
+                    <th>course </th>
+                    <th>course_dates</th>
+                    <th>course_time</th>
+                    <th>course length</th>
+                    <th>delivered</th>
+                    {% if request.user.is_superuser %}
+                    <th>Action</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for c_s in group_sessions %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td>{{ c_s.allocations.lecturer.get_full_name }}</td>
+                    <td>{{ c_s.allocations.content_object }}</td>
+                    <td>{{ c_s.allocations.courses.title }}</td>
+                    <td>{{ c_s.select_day }}
+                    <td>{{ c_s.select_time }}
+                    <td>{{ c_s.allocations.course_length }}
+                    <td>{% if c_s.delivered %}
+                        Yes
+                        {% else %} No {% endif %}
+                    </td>
+
+
+                    <td>
+                        <div class="update-delete">
+                            <a href="{% url 'course_session_edit' pk=c_s.id %}" class="update"><i
+                                    class="fas fa-edit"></i></a>
+                            {% if request.user.is_superuser %}
+                            <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#exampleModal-{{c_s.id}}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            {% endif %}
+                        </div>
+                        
+
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if request.user.is_superuser %}
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal-{{c_s.id}}" tabindex="-1" aria-labelledby="exampleModal-{{c_s.id}}Label" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <p class="p-4">
+                                        Are you sure you want to delete this program?
+                                    </p>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+                                        <a class="btn btn-danger"
+                                            href="{% url 'course_session_delete' pk=c_s.id %}">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the "Clear" button element
+        var clearButton = document.getElementById('clearButton');
+
+        // Add a click event listener to the "Clear" button
+        clearButton.addEventListener('click', function () {
+            // Select the input elements and clear their values
+            var lecturerInput = document.querySelector('input[name="lecturer"]');
+            var studentInput = document.querySelector('input[name="student"]');
+            var courseInput = document.querySelector('input[name="course"]');
+
+            lecturerInput.value = '';
+            studentInput.value = '';
+            courseInput.value = '';
+        });
+    });
+</script>
+{% endblock js %}

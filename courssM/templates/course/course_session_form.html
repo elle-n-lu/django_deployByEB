@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div id="input-nav"><a href="{% url 'home' %}" class="primary1">Home</a> <i>&rsaquo;</i> 
+    <a href="{% url 'course_session' %}" class="primary1">course session</a> <i>&rsaquo;</i> Add</div>
+<br>
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>{{ message }}
+            </div>
+        {% else %}
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>{{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <p class="form-title">Course Session Form</p>
+            <div class="p-3">
+                <form action="" method="POST">{% csrf_token %}
+                    <!-- {{ form|crispy }} -->
+                    <!-- {{form.as_p}} -->
+                        <div class="form-group">
+                            {{ form.allocations.label }}
+                            {{ form.allocations }}
+                            <span class="danger">{{ form.allocations.errors }}</span>
+                        </div>
+                        <div class="form-group">
+                            {{ form.repete_times.label }}{{ form.repete_times }}
+                            <span class="danger">{{ form.repete_times.errors }}</span>
+                        </div>
+                        <div class="form-group">
+                            {{ form.start_week_date.label }}{{ form.start_week_date }}
+                            <span class="danger">{{ form.start_week_date.errors }}</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="">Select days</label>
+                            <div class="form-check">
+                                {{ form.mondayCheck }}Monday
+                                {{form.mondayTime}}
+                                <span class="danger">{{ form.mondayTime.errors }}</span>
+                                <span class="danger">{{ form.mondayCheck.errors }}</span>
+                            </div>
+                            <div class="form-check">
+                                {{ form.tuesdayCheck }}Tuesday: 
+                                {{form.tuesdayTime}}
+                                <span class="danger">{{ form.tuesdayTime.errors }}</span>
+                                <span class="danger">{{ form.tuesdayCheck.errors }}</span>
+                            </div>
+                            <div class="form-check">
+                                {{ form.wendCheck }}  Wendesday
+                                {{form.wendTime}}
+                                <span class="danger">{{ form.wendTime.errors }}</span>
+                                <span class="danger">{{ form.wendCheck.errors }}</span>
+                            </div>
+                            <div class="form-check">
+                                {{ form.thurCheck }}Thursday: 
+                                {{form.thurTime}}
+                                <span class="danger">{{ form.thurTime.errors }}</span>
+                                <span class="danger">{{ form.mondayCheck.errors }}</span>
+                            </div>
+                            <div class="form-check">
+                                {{ form.fridayCheck }}Friday:
+                                {{form.fridayTime}}
+                                <span class="danger">{{ form.fridayTime.errors }}</span>
+                                <span class="danger">{{ form.fridayCheck.errors }}</span>
+                           </div>
+                        </div>
+                        
+                      
+                    <input class="btn btn-outline-primary" type="submit" value="Save">
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}

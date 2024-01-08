@@ -1,0 +1,6 @@
+.ebextensions
+.elasticbeanstalk
+.env
+.venv
+__pycache__
+Dockerfile

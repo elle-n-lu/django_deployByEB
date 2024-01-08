@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div id="input-nav"><a href="{% url 'home' %}" class="primary1">Home</a> <i>&rsaquo;</i> 
+    <a href="javascript:history.back()" class="primary1">course session</a> 
+    <i>&rsaquo;</i> Edit</div>
+<br>
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>{{ message }}
+            </div>
+        {% else %}
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>{{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <p class="form-title">Course Session Form</p>
+            <div class="p-3">
+                <form action="" method="POST">{% csrf_token %}
+                    <!-- {{ form|crispy }} -->
+                    <!-- {{form.as_p}} -->
+                        <div class="form-group">
+                            {{ form.allocations.label }}30
+                            {{ form.allocations }}
+                            <span class="danger">{{ form.allocations.errors }}</span>
+                        </div>
+                        <div class="form-group">
+                            {{ form.day.label }}{{ form.day }}
+                            <span class="danger">{{ form.day.errors }}</span>
+                        </div>
+                        <div class="form-group">
+                            {{ form.time.label }}{{ form.time }}
+                            <span class="danger">{{ form.time.errors }}</span>
+                        </div>
+                        <div class="form-group d-flex">
+                            {% if request.user.is_superuser or request.user.is_lecturer %}
+                                {{ form.tutor_confirm.label }}
+                                <div class="form-check">
+
+                                    {{ form.tutor_confirm }}
+                                    <span class="danger">{{ form.tutor_confirm.errors }}</span>
+                                </div>
+                            {% endif %}
+                            {% if request.user.is_parent or request.user.is_superuser %}
+
+                            {{ form.student_confirm.label }}
+                            <div class="form-check">
+                               {{ form.student_confirm }}
+                                <span class="danger">{{ form.student_confirm.errors }}</span>
+                            </div>
+                            {% endif %}
+                            
+                        </div>
+                        
+                      
+                    <input class="btn btn-outline-primary" type="submit" value="Save">
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}
