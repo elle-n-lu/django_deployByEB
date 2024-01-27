@@ -1,6 +1,6 @@
 # Deploy Django project with AWS EB
 
-[Website](https://schedule-study.w3nlu.com)
+
 
 ![alt text](./docs/django_deploy_byEB.png)
 
